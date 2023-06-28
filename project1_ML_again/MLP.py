@@ -15,7 +15,14 @@ class MLP:
         # 가중치 초기화
         self.params = {}
         for idx in range(1, self.all_size_list_num):  # hidden_layer에 맞춰서 가중치를 생성한다
-            self.params['W' + str(idx)] = weight_init_std * np.random.randn(all_size_list[idx - 1], all_size_list[idx])
+            scale = np.sqrt(2.0 / all_size_list[idx - 1])  # ReLU를 사용할 때의 권장 초깃값
+
+            # 표준정규 분포를 따라서 행렬을 만든다 처음은 784x100 행렬을 만들고 scale을 곱해줘라
+            # 그러면 N(0, scale) 값으로 바뀌게 된다 (N은 정규분포를 의미)
+            self.params['W' + str(idx)] = scale * np.random.randn(all_size_list[idx - 1], all_size_list[idx])
+
+            # self.params['W' + str(idx)] = weight_init_std * np.random.randn(all_size_list[idx - 1], all_size_list[idx])
+
             self.params['b' + str(idx)] = np.zeros(all_size_list[idx])
 
         # 계층 생성 ========================

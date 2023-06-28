@@ -27,7 +27,7 @@ def softmax(x):
 # negative_log_likelihood loss function
 def negative_log_likelihood_loss(x, t):
     n_samples = x.shape[0]
-    t = np.argmin(t, axis=1)  # 정수로 변환
+    t = np.argmax(t, axis=1)  # 정수로 변환
     log_likelihood = -np.log(x[np.arange(n_samples), t])
     loss = np.sum(log_likelihood) / n_samples
 

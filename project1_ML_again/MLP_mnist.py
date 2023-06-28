@@ -1,5 +1,8 @@
 import sys
 import os
+
+import numpy as np
+
 sys.path.append(os.pardir)
 from dataset.mnist import load_mnist
 from MLP import *
@@ -30,6 +33,12 @@ train_loss_list = []
 train_acc_list = []
 test_acc_list = []
 
+# Early Stopping 관련 변수
+min_delta = 0.01
+patience = 10
+best_val_loss = 100
+counter = 0
+
 # 1에폭당 반복 수
 iter_per_epoch = max(train_size / batch_size, 1)
 
@@ -59,6 +68,22 @@ for i in range(iters_num):
         train_acc_list.append(train_acc)
         test_acc_list.append(test_acc)
         print("train acc, test acc | " + str(train_acc) + ", " + str(test_acc))
+
+        # Early Stopping 적용
+        val_loss = net_MLP.loss(x_test, t_test)
+        print("loss : " + str(val_loss))
+        if np.abs(val_loss - best_val_loss) < min_delta:
+
+            counter += 1
+        else:
+            best_val_loss = val_loss
+            counter = 0
+
+
+    if counter >= patience:
+        print(f"Early stopping at Epoch {i // iter_per_epoch + 1}, Best Validation Loss: {best_val_loss}")
+        break
+
 
 probability = softmax(net_MLP.predict(sample.reshape(1, 784)))
 plt.subplot()
